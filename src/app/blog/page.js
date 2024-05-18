@@ -1,8 +1,9 @@
 import React from 'react'
+import styles from "./blog.module.css";
 
 const Blog = () => {
   return (
-    <div>
+    <div className={styles.container}>
       Blog
     </div>
   )
