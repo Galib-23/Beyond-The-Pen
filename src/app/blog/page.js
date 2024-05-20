@@ -1,21 +1,23 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import styles from "./blog.module.css";
 import PostCard from '@/components/postCart/postCard';
 
-const getData = async () => {
-  const res = await fetch("http://localhost:3000/api/blog", {next:{revalidate:3600}});
 
-  if (!res.ok) {
-    throw new Error("Something went wrong");
-  }
 
-  return res.json();
-};
+const Blog = () => {
 
-const Blog = async() => {
+  const [ posts, setPosts ] = useState([]);
 
-  const posts = await getData();
-
+  useEffect(() => {
+    const getBlogPosts = async () => {
+      const res = await fetch("/api/blog", {next: {revalidate: 3600}});
+      const data = await res.json();
+      setPosts(data);
+    }
+    getBlogPosts()
+  }, [])
+  
   return (
     <div className={styles.container}>
       {posts.map((post) => (
