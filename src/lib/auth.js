@@ -4,27 +4,28 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDb } from "./utils";
 import { User } from "./models";
 import bcrypt from "bcryptjs";
+import { authConfig } from "./auth.config";
 
-
-const login = async(credentials) =>{
+const login = async (credentials) => {
   try {
-    await connectToDb();
-    const user = await User.findOne({username: credentials.username});
-    if(!user){
-      throw new Error("Wrong Credentials");
-    }
+    connectToDb();
+    const user = await User.findOne({ username: credentials.username });
+
+    if (!user) throw new Error("User doesn't exists!");
+
     const isPasswordCorrect = await bcrypt.compare(
       credentials.password,
       user.password
     );
-    if(!isPasswordCorrect){
-      throw new Error("wrong credentials!");
-    }
+
+    if (!isPasswordCorrect) throw new Error("Wrong credentials!");
+
     return user;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to login!");
   }
-}
+};
 
 
 export const {
@@ -33,6 +34,7 @@ export const {
     signIn,
     signOut,
   } = NextAuth({
+  ...authConfig,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -41,7 +43,8 @@ export const {
     CredentialsProvider({
       async authorize(credentials){
         try {
-          const user = await login(credentials)
+          const user = await login(credentials);
+          return user;
         } catch (error) {
           return null;
         }
@@ -49,6 +52,7 @@ export const {
     })
   ],
   callbacks: {
+
     async signIn({user, account, profile}){
       if(account.provider === "github"){
         connectToDb();
@@ -70,6 +74,9 @@ export const {
         }
       }
       return true;
-    }
+    },
+    ...authConfig.callbacks,
   }
+
+
 });

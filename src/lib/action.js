@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { Post, User } from "./models";
 import { connectToDb } from "./utils";
 import { signIn, signOut } from "./auth";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 
 export const testFun = async () => {
   "use server";
@@ -58,16 +59,15 @@ export const handleRegister = async (previousState, formData) => {
   const { username, email, password, img, passwordRepeat } =
     Object.fromEntries(formData);
   if (password !== passwordRepeat) {
-    
     return { error: "Passwords do not match" };
   }
   try {
     connectToDb();
 
-    const user = await User.findOne({username});
-    if(user){
-      console.log("Username already exists")
-      return { error: "Username already exists"}
+    const user = await User.findOne({ username });
+    if (user) {
+      console.log("Username already exists");
+      return { error: "Username already exists" };
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -84,16 +84,27 @@ export const handleRegister = async (previousState, formData) => {
     return { success: true };
   } catch (error) {
     console.log("Error in creating user: ", error);
-    return { error: "Error in creating user! try again"}
+    return { error: "Error in creating user! try again" };
   }
 };
 
-export const handleLogin = async (formData) => {
+export const handleLogin = async (prevState, formData) => {
   const { username, password } = Object.fromEntries(formData);
+
   try {
-    await signIn("credentials", {username, password});
+      await signIn("credentials", { username, password });
   } catch (error) {
-    console.log("Error in login: ", error)
-    return {error: "Error in login"}
+    if (error instanceof AuthError) {
+      if (error.cause?.err instanceof Error) {
+        return error.cause.err.message;
+      }
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials';
+        default:
+          return 'Something went wrong';
+      }
+    }
+    throw error;
   }
-}
+};
