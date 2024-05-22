@@ -13,7 +13,7 @@ export const testFun = async () => {
 };
 
 export const addPost = async (prevState, formData) => {
-  const { title, desc, slug, userId } = Object.fromEntries(formData);
+  const { title, desc, slug, userId, img } = Object.fromEntries(formData);
 
   try {
     connectToDb();
@@ -21,6 +21,7 @@ export const addPost = async (prevState, formData) => {
       title,
       desc,
       slug,
+      img,
       userId,
     });
     await newPost.save();
@@ -84,7 +85,7 @@ export const handleRegister = async (previousState, formData) => {
     return { success: true };
   } catch (error) {
     console.log("Error in creating user: ", error);
-    return { error: "Error in creating user! try again" };
+    return { error: "Error in creating user. "}
   }
 };
 
@@ -106,5 +107,42 @@ export const handleLogin = async (prevState, formData) => {
       }
     }
     throw error;
+  }
+};
+
+export const addUser = async (prevState,formData) => {
+  const { username, email, password, img } = Object.fromEntries(formData);
+  
+  try {
+    connectToDb();
+    const newUser = new User({
+      username,
+      email,
+      password,
+      img,
+    });
+
+    await newUser.save();
+    console.log("saved to db");
+    revalidatePath("/admin");
+  } catch (err) {
+    console.log(err);
+    return { error: "Something went wrong!" };
+  }
+};
+
+export const deleteUser = async (formData) => {
+  const { id } = Object.fromEntries(formData);
+
+  try {
+    connectToDb();
+
+    await Post.deleteMany({ userId: id });
+    await User.findByIdAndDelete(id);
+    console.log("deleted from db");
+    revalidatePath("/admin");
+  } catch (err) {
+    console.log(err);
+    return { error: "Something went wrong!" };
   }
 };

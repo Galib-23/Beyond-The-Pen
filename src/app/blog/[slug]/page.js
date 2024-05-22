@@ -29,6 +29,7 @@ const SinglePostPage = async ({params}) => {
 
   const { slug } = params;
   const post = await getData(slug);
+  console.log(post)
   // const post = await getPost(slug);
   
 
