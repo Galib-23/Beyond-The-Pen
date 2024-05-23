@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Blog Website
+
+## Overview
+
+This is a fully functional blog website built with Next.js. The application features role-based authentication using NextAuth with a GitHub provider. It employs Mongoose and MongoDB for the backend database and Bcrypt.js for password hashing. The application is responsive and supports two roles: normal user and admin.
+
+## Live Link: [Beyond The Pen](https://beyond-the-pen.vercel.app/)
+
+## Features
+
+### User Authentication
+- **GitHub Authentication**: Users can log in using their GitHub account.
+- **Role-Based Access Control**: 
+  - Normal users can only access the blog page after logging in.
+  - Admin users have access to an admin dashboard.
+
+### Admin Dashboard
+- **User Management**: Admins can manage users, including setting user roles to admin or deleting users permanently.
+- **Blog Management**: Admins can create, update, and delete blog posts.
+
+### Responsive Design
+- The application is fully responsive and works well on various screen sizes.
+
+## Tech Stack
+
+### Frontend
+- **Next.js**: React framework for server-side rendering and static site generation.
+- **CSS**: For styling the components.
+
+### Backend
+- **Next.js API Routes**: For handling backend logic.
+- **NextAuth**: Authentication library for Next.js.
+  - **GitHub Provider**: OAuth provider for GitHub login.
+- **Mongoose**: ODM (Object Data Modeling) library for MongoDB and Node.js.
+- **MongoDB**: NoSQL database for storing user and blog data.
+- **Bcrypt.js**: Library for hashing passwords.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js
+- MongoDB
+- GitHub OAuth App setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Galib-23/Beyond-The-Pen.git
+   cd Beyond-The-Pen
+   ```
+
+2. Install Dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Creaet a .env.local file in the root directory:
+    ```.env
+    MONGO_URL=mongodb+srv://beyondthepen:5jA9e6EI7ccBrCrs@mern-estate-cluster.pesxosd.mongodb.net/blog?retryWrites=true&w=majority&appName=mern-estate-cluster
+    AUTH_SECRET=thisisauthsecrethaha
+    AUTH_URL=http://localhost:3000/api/auth
+    NEXTAUTH_URL=http://localhost:3000 // change the url after production
+    GITHUB_CLIENT_ID=Ov23liXbiwhbLv1koQNE
+    GITHUB_CLIENT_SECRET=cc705a6f9b351e6dc02a1be2a662d95dc2462d4b
+    ```
+
+4. Run the local development server:
+    ```bash
+    npm run dev
+    ```
+
+## Issues Regarding Authentication with User credentials:
+
+```javascript
+providers: [
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
+    CredentialsProvider({
+      async authorize(credentials){
+        try {
+          const user = await login(credentials);
+          return user;
+        } catch (error) {
+          return null;
+        }
+      }
+    })
+  ],
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Here it returns either null or the user that's why it's quite difficult to show custom message to the client side
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For more details [See here (next-auth/issues/9900)](https://github.com/nextauthjs/next-auth/issues/9900)
