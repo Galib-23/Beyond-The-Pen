@@ -7,7 +7,7 @@ import { getPost } from '@/lib/data';
 //fetching without useEffect
 //in this case I have to specify the domain
 const getData = async (slug) => {
-  const res = await fetch (`http://localhost:3000/api/blog/${slug}`);
+  const res = await fetch (`https://beyond-the-pen.vercel.app/api/blog/${slug}`);
   if(!res.ok){
     throw new Error("Something went wrong")
   }
