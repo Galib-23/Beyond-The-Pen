@@ -8,8 +8,8 @@ const Home = () => {
       <div className={styles.textContainer}>
         <h1 className={styles.title}>Creative Thoughts Agency.</h1>
         <p className={styles.desc}>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero
-          blanditiis adipisci minima reiciendis a autem assumenda dolore.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br />
+          Odio veritatis maiores modi ipsum inventore magni <br /> quas repellendus ab quae quibusdam.
         </p>
         <div className={styles.buttons}>
           <button className={styles.button}>Learn More</button>
