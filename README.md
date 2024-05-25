@@ -54,8 +54,7 @@ This is a fully functional blog website built with Next.js. The application feat
     ```bash
     npm install
     ```
-
-3. Creaet a .env.local file in the root directory:
+<!-- 3. Creaet a .env.local file in the root directory:
     ```.env
     MONGO_URL=mongodb+srv://beyondthepen:5jA9e6EI7ccBrCrs@mern-estate-cluster.pesxosd.mongodb.net/blog?retryWrites=true&w=majority&appName=mern-estate-cluster
     AUTH_SECRET=thisisauthsecrethaha
@@ -63,9 +62,9 @@ This is a fully functional blog website built with Next.js. The application feat
     NEXTAUTH_URL=http://localhost:3000 // change the url after production
     GITHUB_CLIENT_ID=Ov23liXbiwhbLv1koQNE
     GITHUB_CLIENT_SECRET=cc705a6f9b351e6dc02a1be2a662d95dc2462d4b
-    ```
+    ``` -->
 
-4. Run the local development server:
+3. Run the local development server:
     ```bash
     npm run dev
     ```
